@@ -15,6 +15,9 @@ class RestSpec(DomainSpec):
                 "food_pref": {"inform": ["%sがいいです。", "%sが食べたい。", "%s"],
                               "request": ["何を食べたいですか。", "食べたいものはありますか。"]},
 
+                "rating": {"inform": ["このお店の評価値は%sです。", "%sです"],
+                            "request": ["評価値はどれくらいですか。", "お店の評判を教えて"]},
+
                 "price": {"inform": ["このお店は%sです。", "値段は%s。"],
                           "request": ["値段はどれくらいですか。", "平均価格を教えて下さい。"],
                           "yn_question": {'expensive': ["高いですか。"],
@@ -27,14 +30,15 @@ class RestSpec(DomainSpec):
                                         "レストランを探しています。"]}
                 }
 
-    usr_slots = [("loc", "location city", ["Pittsburgh", "New York", "Boston", "Seattle",
-                                           "Los Angeles", "San Francisco", "San Jose",
-                                           "Philadelphia", "Washington DC", "Austin"]),
-                 ("food_pref", "food preference", ["Thai", "Chinese", "Korean", "Japanese",
-                                                   "American", "Italian", "Indian", "French",
-                                                   "Greek", "Mexican", "Russian", "Hawaiian"])]
+    usr_slots = [("loc", "location city", ["大崎", "東京", "品川", "町田",
+                                           "国分寺", "三鷹", "新宿",
+                                           "渋谷", "立川", "八王子"]),
+                 ("food_pref", "food preference", ["タイ料理", "中華", "韓国料理", "和食",
+                                                   "ロシア料理", "洋食", "イタリアン", "フレンチ",
+                                                   "カフェ", "メキシコ料理", "ハワイ料理", "お寿司"])]
 
-    sys_slots = [("price", "average price per person", ["cheap", "moderate", "expensive"])]
+    sys_slots = [("price", "average price per person", ["cheap", "moderate", "expensive"]),
+                 ("rating", "customer rating", ["1", "2", "3", "4", "5"])]
 
     db_size = 100
 

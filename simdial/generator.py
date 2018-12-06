@@ -53,9 +53,9 @@ class Generator(object):
                     else:
                         str_actions = " ".join([a.dump_string() for a in actions])
                     if speaker == "USR":
-                        f.write("%s(%f)-> %s\n" % (speaker, turn['conf'], str_actions))
+                        f.write("%s(%f)-> %s\n" % (speaker, turn['conf'], str_actions), ensure_ascii=False)
                     else:
-                        f.write("%s -> %s\n" % (speaker, str_actions))
+                        f.write("%s -> %s\n" % (speaker, str_actions), ensure_ascii=False)
 
         if output_file is not None:
             f.close()

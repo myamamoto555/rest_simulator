@@ -85,7 +85,7 @@ class SysNlg(AbstractNlg):
                 a_copy.parameters[0] = search_dict
                 a_copy.parameters[1] = sys_goals
                 str_actions.append(json.dumps({"QUERY": search_dict,
-                                               "GOALS": sys_goals}))
+                                               "GOALS": sys_goals}, ensure_ascii=False))
 
             elif a.act == SystemAct.INFORM:
                 sys_goals = a.parameters[1]
@@ -123,7 +123,7 @@ class SysNlg(AbstractNlg):
                     a_copy.parameters[0] = (slot_type, "dont_care")
                 else:
                     slot = self.domain.get_usr_slot(slot_type)
-                    str_actions.append("Do you mean %s?"
+                    str_actions.append("%sで探してよろしいでしょうか。"
                                        % slot.vocabulary[slot_val])
                     a_copy.parameters[0] = (slot_type, slot.vocabulary[slot_val])
 

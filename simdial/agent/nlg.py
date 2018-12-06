@@ -32,21 +32,19 @@ class AbstractNlg(object):
 
 
 class SysCommonNlg(object):
-    templates = {SystemAct.GREET: ["Hello.", "Hi.", "Greetings.", "How are you doing?"],
-                 SystemAct.ASK_REPEAT: ["Can you please repeat that?", "What did you say?"],
-                 SystemAct.ASK_REPHRASE: ["Can you please rephrase that?", "Can you say it in another way?"],
-                 SystemAct.GOODBYE: ["Goodbye.", "See you next time."],
-                 SystemAct.CLARIFY: ["I didn't catch you."],
-                 SystemAct.REQUEST+core.BaseUsrSlot.NEED: ["What can I do for you?",
-                                                           "What do you need?",
-                                                           "How can I help?"],
-                 SystemAct.REQUEST+core.BaseUsrSlot.HAPPY: ["What else can I do?",
-                                                            "Are you happy about my answer?",
-                                                            "Anything else?"],
-                 SystemAct.EXPLICIT_CONFIRM+"dont_care": ["Okay, you dont_care, do you?",
-                                                          "You dont_care, right?"],
-                 SystemAct.IMPLICIT_CONFIRM+"dont_care": ["Okay, you dont_care.",
-                                                          "Alright, dont_care."]}
+    templates = {SystemAct.GREET: ["挨拶"],
+                 SystemAct.ASK_REPEAT: ["ああああああああ"],
+                 SystemAct.ASK_REPHRASE: ["別の言い方で言って下さい。"],
+                 SystemAct.GOODBYE: ["さようなら。"],
+                 SystemAct.CLARIFY: ["わかりません。"],
+                 SystemAct.REQUEST+core.BaseUsrSlot.NEED: ["レストランの検索ができます。"],
+                 SystemAct.REQUEST+core.BaseUsrSlot.HAPPY: ["他には何かありますか？",
+                                                            "他にも何でも聞いて下さい。",
+                                                            "それ以外に手伝えることはありますか？"],
+                 SystemAct.EXPLICIT_CONFIRM+"dont_care": ["気にしない、ということですね？",
+                                                          "気にしないのであっていますか？"],
+                 SystemAct.IMPLICIT_CONFIRM+"dont_care": ["気にしない、ということですね。",
+                                                          "分かりました。"]}
 
 class SysNlg(AbstractNlg):
     """
@@ -174,10 +172,10 @@ class UserNlg(AbstractNlg):
 
                 str_actions.append(json.dumps({"RET": sys_goal_dict}))
             elif a.act == UserAct.GREET:
-                str_actions.append(self.sample(["Hi.", "Hello robot.", "What's up?"]))
+                str_actions.append(self.sample(["挨拶"]))
 
             elif a.act == UserAct.GOODBYE:
-                str_actions.append(self.sample(["That's all.", "Thank you.", "See you."]))
+                str_actions.append(self.sample(["大丈夫です。"]))
 
             elif a.act == UserAct.REQUEST:
                 slot_type, _ = a.parameters[0]
@@ -191,7 +189,7 @@ class UserNlg(AbstractNlg):
 
                 def get_inform_utt(val):
                     if val is None:
-                        return self.sample(["Anything is fine.", "I don't care.", "Whatever is good."])
+                        return self.sample(["何でも大丈夫です。", "特に気にしません。"])
                     else:
                         return target_slot.sample_inform() % target_slot.vocabulary[val]
 
@@ -214,19 +212,19 @@ class UserNlg(AbstractNlg):
                 str_actions.append(target_slot.sample_yn_question(expect_val))
 
             elif a.act == UserAct.CONFIRM:
-                str_actions.append(self.sample(["Yes.", "Yep.", "Yeah.", "That's correct.", "Uh-huh."]))
+                str_actions.append(self.sample(["はい", "そうです", "それで合っています", "うん", "ok"]))
 
             elif a.act == UserAct.DISCONFIRM:
-                str_actions.append(self.sample(["No.", "Nope.", "Wrong.", "That's wrong.", "Nay."]))
+                str_actions.append(self.sample(["そうじゃない", "いいえ", "ちゃう", "違います", "ちがう"]))
 
             elif a.act == UserAct.SATISFY:
-                str_actions.append(self.sample(["No more questions.", "I have all I need.", "All good."]))
+                str_actions.append(self.sample(["大丈夫です。", "十分です", "もういい"]))
 
             elif a.act == UserAct.MORE_REQUEST:
-                str_actions.append(self.sample(["I have more requests.", "One more thing.", "Not done yet."]))
+                str_actions.append(self.sample(["他にもあります。", "聞きたいことがあります。", "まだ"]))
 
             elif a.act == UserAct.NEW_SEARCH:
-                str_actions.append(self.sample(["I want to search a new one.", "New request.", "A new search."]))
+                str_actions.append(self.sample(["別に探して欲しい", "新しい条件で探して", "新しい検索条件"]))
 
             else:
                 raise ValueError("Unknown user act %s for NLG" % a.act)

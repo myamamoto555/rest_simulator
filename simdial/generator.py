@@ -42,7 +42,7 @@ class Generator(object):
 
         if in_json:
             combo = {'dialogs': dialogs, 'meta': domain_spec.to_dict()}
-            json.dump(combo, f, indent=2)
+            json.dump(combo, f, indent=2, ensure_ascii=False)
         else:
             for idx, d in enumerate(dialogs):
                 f.write("## DIALOG %d ##\n" % idx)

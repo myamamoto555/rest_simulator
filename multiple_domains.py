@@ -18,14 +18,25 @@ class RestSpec(DomainSpec):
                 "rating": {"inform": ["このお店の評価値は%sです。", "%sです"],
                             "request": ["評価値はどれくらいですか。", "お店の評判を教えて"]},
 
-                "price": {"inform": ["このお店は%sです。", "値段は%s。"],
-                          "request": ["値段はどれくらいですか。", "平均価格を教えて下さい。"],
-                          "yn_question": {'expensive': ["高いですか。"],
-                                          'moderate': ["妥当な値段ですか。"],
-                                          'cheap': ["安いですか。"]
-                                          }},
+                "price": {"inform": ["このお店の平均価格は%sです。", "値段は%s。"],
+                          "request": ["値段はどれくらいですか。", "平均価格を教えて下さい。"]},
 
-                "default": {"inform": ["%sはいかがでしょうか。"],
+                "parking": {"inform": ["近くに駐車場は%s"],
+                            "request": ["駐車場はありますか", "近くに車を停める場所はありますか"]},
+                          
+                "kid": {"inform": ["お子様メニューは%s"],
+                        "request": ["子供向けのメニューはありますか？", "お子様メニューはある？"]},
+
+                "lunch": {"inform": ["ランチメニューは%s"],
+                          "request": ["ランチメニューはありますか。", "お昼ごはん食べれますか"]},
+                          
+                "buffet": {"inform": ["食べ放題メニューは%s"],
+                           "request": ["食べ放題メニューはありますか", "食べ放題ある？"]},
+
+                "private": {"inform": ["個室は%s"],
+                           "request": ["個室はありますか", "個室ある？"]},
+
+                "default": {"inform": ["レストラン%sはいかがでしょうか。"],
                             "request": ["お勧めはありますか。",
                                         "レストランを探しています。"]}
                 }
@@ -37,8 +48,13 @@ class RestSpec(DomainSpec):
                                                    "ロシア料理", "洋食", "イタリアン", "フレンチ",
                                                    "カフェ", "メキシコ料理", "ハワイ料理", "お寿司"])]
 
-    sys_slots = [("price", "average price per person", ["cheap", "moderate", "expensive"]),
-                 ("rating", "customer rating", ["1", "2", "3", "4", "5"])]
+    sys_slots = [("price", "average price per person", ["1000円", "2000円", "3000円", "50000円", "10000円"]),
+                 ("rating", "customer rating", ["1", "2", "3", "4", "5"]),
+                 ("parking", "parking", ["あります", "ありません"]),
+                 ("kid", "kid menu flag", ["あります", "ありません"]),
+                 ("lunch", "lunch menu flag", ["あります", "ありません"]),
+                 ("buffet", "buffet flag", ["あります", "ありません"]),
+                 ("private", "private room flag", ["あります", "ありません"])]
 
     db_size = 100
 

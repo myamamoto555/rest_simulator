@@ -276,7 +276,8 @@ class System(Agent):
 
         # dialog opener
         if len(self.state.history) == 0:
-            return [Action(SystemAct.GREET), Action(SystemAct.REQUEST, (BaseUsrSlot.NEED, None))]
+            return [Action(SystemAct.GREET), Action(SystemAct.REQUEST, ("#need", None))]
+            #return [Action(SystemAct.GREET)]
 
         last_usr = self.state.last_actions(DialogState.USR)
         if last_usr is None:

@@ -35,15 +35,15 @@ class SysCommonNlg(object):
     templates = {SystemAct.GREET: ["挨拶"],
                  SystemAct.ASK_REPEAT: ["ああああああああ"],
                  SystemAct.ASK_REPHRASE: ["別の言い方で言って下さい。"],
-                 SystemAct.GOODBYE: ["さようなら。"],
+                 SystemAct.GOODBYE: ["別れの挨拶。(ご利用ありがとうございました、さようなら等)", "気の効いた別れの挨拶。(お食事楽しんできて下さいね等)"],
                  SystemAct.CLARIFY: ["わかりません。"],
-                 SystemAct.REQUEST+core.BaseUsrSlot.NEED: ["レストランの検索ができます。"],
+                 SystemAct.REQUEST+core.BaseUsrSlot.NEED: ["レストラン検索システムです。"],
                  SystemAct.REQUEST+core.BaseUsrSlot.HAPPY: ["他には何かありますか？",
                                                             "他にも何でも聞いて下さい。",
                                                             "それ以外に手伝えることはありますか？"],
-                 SystemAct.EXPLICIT_CONFIRM+"dont_care": ["気にしない、ということですね？",
-                                                          "気にしないのであっていますか？"],
-                 SystemAct.IMPLICIT_CONFIRM+"dont_care": ["気にしない、ということですね。",
+                 SystemAct.EXPLICIT_CONFIRM+"dont_care": ["それ以外の条件は指定しなくて大丈夫ですね？",
+                                                          "その他の条件は指定せずに探しますね？"],
+                 SystemAct.IMPLICIT_CONFIRM+"dont_care": ["了解です。",
                                                           "分かりました。"]}
 
 class SysNlg(AbstractNlg):
@@ -170,12 +170,12 @@ class UserNlg(AbstractNlg):
                     slot = self.domain.get_sys_slot(k)
                     sys_goal_dict[k] = slot.vocabulary[v]
 
-                str_actions.append(json.dumps({"RET": sys_goal_dict}))
+                str_actions.append(json.dumps({"RET": sys_goal_dict}, ensure_ascii=False))
             elif a.act == UserAct.GREET:
-                str_actions.append(self.sample(["挨拶"]))
+                str_actions.append(self.sample(["挨拶。(こんにちは等)"]))
 
             elif a.act == UserAct.GOODBYE:
-                str_actions.append(self.sample(["大丈夫です。"]))
+                str_actions.append(self.sample(["感謝の言葉。(ありがとう等)", "別れの挨拶。(さようなら等)"]))
 
             elif a.act == UserAct.REQUEST:
                 slot_type, _ = a.parameters[0]
@@ -189,7 +189,10 @@ class UserNlg(AbstractNlg):
 
                 def get_inform_utt(val):
                     if val is None:
-                        return self.sample(["何でも大丈夫です。", "特に気にしません。"])
+                        if slot_type == "#loc":
+                            return self.sample(["場所はどこでも大丈夫です。", "場所は特に気にしません。"])
+                        if slot_type == "#food_pref":
+                            return self.sample(["食べ物は何でも大丈夫です。", "食べるものは特に気にしません。"])
                     else:
                         return target_slot.sample_inform() % target_slot.vocabulary[val]
 
@@ -203,7 +206,8 @@ class UserNlg(AbstractNlg):
                     str_actions.append(get_inform_utt(slot_value))
 
             elif a.act == UserAct.CHAT:
-                str_actions.append(self.sample(["What's your name?", "Where are you from?"]))
+                str_actions.append(self.sample(["システムへの暴言(「使えないな」「馬鹿」など)", "システムを褒める言葉(「賢いね」「すごい」)など",
+                                                "意味不明な言葉(「ああああ」「おおおお」など)", "雑談(「今日は寒いですね」「仕事終わった」など)"]))
 
             elif a.act == UserAct.YN_QUESTION:
                 slot_type, expect_id = a.parameters[0]
@@ -218,13 +222,13 @@ class UserNlg(AbstractNlg):
                 str_actions.append(self.sample(["そうじゃない", "いいえ", "ちゃう", "違います", "ちがう"]))
 
             elif a.act == UserAct.SATISFY:
-                str_actions.append(self.sample(["大丈夫です。", "十分です", "もういい"]))
+                str_actions.append(self.sample(["大丈夫です。", "十分です。", "もう大丈夫。"]))
 
             elif a.act == UserAct.MORE_REQUEST:
-                str_actions.append(self.sample(["他にもあります。", "聞きたいことがあります。", "まだ"]))
+                str_actions.append(self.sample([""]))
 
             elif a.act == UserAct.NEW_SEARCH:
-                str_actions.append(self.sample(["別に探して欲しい", "新しい条件で探して", "新しい検索条件"]))
+                str_actions.append(self.sample(["別に探して欲しい。", "新しい条件で探して。", "新しい検索条件。"]))
 
             else:
                 raise ValueError("Unknown user act %s for NLG" % a.act)

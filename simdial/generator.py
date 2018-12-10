@@ -13,6 +13,7 @@ import numpy as np
 import sys
 import os
 import re
+import codecs
 
 class Generator(object):
     """
@@ -95,6 +96,8 @@ class Generator(object):
         :return: a list of dialogs. Each dialog is a list of turns.
         """
         dialogs = []
+        outputs = []
+        states = []
         action_channel = ActionChannel(domain, complexity)
         word_channel = WordChannel(domain, complexity)
 
@@ -112,11 +115,15 @@ class Generator(object):
             noisy_usr_as = []
             dialog = []
             conf = 1.0
+            one_dialog = []
+            one_state = []
             while True:
                 # make a decision
                 sys_r, sys_t, sys_as, sys_s = sys.step(noisy_usr_as, conf)
                 sys_utt, sys_str_as = sys_nlg.generate_sent(sys_as, domain=domain)
                 dialog.append(self.pack_msg("SYS", sys_utt, actions=sys_str_as, domain=domain.name, state=sys_s))
+                one_dialog.append(("System", sys_as, sys_utt))
+                one_state.append(sys_s)
 
                 if sys_t:
                     break
@@ -128,11 +135,14 @@ class Generator(object):
                 usr_utt = usr_nlg.generate_sent(noisy_usr_as)
                 noisy_usr_utt = word_channel.transmit2sys(usr_utt)
 
+                one_dialog.append(("User", noisy_usr_as, noisy_usr_utt))
                 dialog.append(self.pack_msg("USR", noisy_usr_utt, actions=noisy_usr_as, conf=conf, domain=domain.name))
 
             dialogs.append(dialog)
+            outputs.append(one_dialog)
+            states.append(one_state)
 
-        return dialogs
+        return dialogs, outputs
 
     def gen_corpus(self, name, domain_spec, complexity_spec, size):
         if not os.path.exists(name):
@@ -143,7 +153,7 @@ class Generator(object):
         complex = Complexity(complexity_spec)
 
         # generate the corpus conditioned on domain & complexity
-        corpus = self.gen(domain, complex, num_sess=size)
+        corpus, out = self.gen(domain, complex, num_sess=size)
 
         # txt_file = "{}-{}-{}.{}".format(domain_spec.name,
         #                                complexity_spec.__name__,
@@ -156,3 +166,13 @@ class Generator(object):
         json_file = os.path.join(name, json_file)
         self.pprint(corpus, True, domain_spec, json_file)
         self.print_stats(corpus)
+
+        fo = open("out.txt", "w")
+        for all_dialog in out:
+            for one_utt in all_dialog:
+                if "kb_return" in str(one_utt) or "query" in str(one_utt):
+                    continue
+                else:
+                    fo.write(one_utt[0] + "\t" + str(one_utt[1]) + "\t" + one_utt[2] + "\n")
+            fo.write("\n")
+        fo.close()

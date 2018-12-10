@@ -149,6 +149,9 @@ class User(Agent):
         self.state.input_buffer.pop(0)
 
         if top_action.act == SystemAct.GREET:
+            #next_goal = self.state.unmet_goal()
+            #print(next_goal)
+            #return Action(UserAct.REQUEST, (next_goal, None))
             return Action(UserAct.GREET)
 
         elif top_action.act == SystemAct.GOODBYE:
@@ -228,11 +231,14 @@ class User(Agent):
 
             slot_type, slot_val = top_action.parameters[0]
 
-            if slot_type == BaseUsrSlot.NEED:
-                next_goal = self.state.unmet_goal()
-                return Action(UserAct.REQUEST, (next_goal, None))
+            #if slot_type == BaseUsrSlot.NEED:
+            #    next_goal = self.state.unmet_goal()
+            #    return Action(UserAct.REQUEST, (next_goal, None))
 
-            elif slot_type == BaseUsrSlot.HAPPY:
+            if slot_type == BaseUsrSlot.NEED:
+                slot_type = "#loc"
+
+            if slot_type == BaseUsrSlot.HAPPY:
                 return None
 
             elif self.domain.is_usr_slot(slot_type):

@@ -8,14 +8,14 @@ import string
 
 class RestSpec(DomainSpec):
     name = "restaurant"
-    greet = "レストラン検索システムです。"
-    nlg_spec = {"loc": {"inform": ["%s。", "%sで食べたいです。", "%sでお願いします。"],
+    greet = "挨拶。(「こんにちは。」や「ご利用ありがとうございます。」等)"
+    nlg_spec = {"loc": {"inform": ["場所は%sがいい。", "%sで食べたいです。", "%sで食べたい。"],
                         "request": ["どこで食べたいですか。", "場所はどこがいいですか。"]},
 
-                "food_pref": {"inform": ["%sがいいです。", "%sが食べたい。", "%s"],
+                "food_pref": {"inform": ["食べるものは%sがいいです。", "%sが食べたい。", "%sを食べたい。"],
                               "request": ["何を食べたいですか。", "食べたいものはありますか。"]},
 
-                "rating": {"inform": ["このお店の評価値は%sです。", "%sです"],
+                "rating": {"inform": ["このお店の評価値は%sです。", "5段階で%sです"],
                             "request": ["評価値はどれくらいですか。", "お店の評判を教えて"]},
 
                 "price": {"inform": ["このお店の平均価格は%sです。", "値段は%s。"],
@@ -46,9 +46,9 @@ class RestSpec(DomainSpec):
                                            "渋谷", "立川", "八王子"]),
                  ("food_pref", "food preference", ["タイ料理", "中華", "韓国料理", "和食",
                                                    "ロシア料理", "洋食", "イタリアン", "フレンチ",
-                                                   "カフェ", "メキシコ料理", "ハワイ料理", "お寿司"])]
+                                                   "スイーツ", "メキシコ料理", "ハワイ料理", "お寿司"])]
 
-    sys_slots = [("price", "average price per person", ["1000円", "2000円", "3000円", "50000円", "10000円"]),
+    sys_slots = [("price", "average price per person", ["1000円", "2000円", "3000円", "5000円", "10000円"]),
                  ("rating", "customer rating", ["1", "2", "3", "4", "5"]),
                  ("parking", "parking", ["あります", "ありません"]),
                  ("kid", "kid menu flag", ["あります", "ありません"]),
